@@ -1,0 +1,133 @@
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+        max-width: 850px;
+        margin: 60px auto;
+        background: rgba(255, 255, 255, 0.96);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+    }
+
+    td {
+        background-color: #f9f9f9;
+    }
+
+    .status-pending { color: orange; font-weight: bold; }
+    .status-approved { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+
+    .btn-cancel {
+        background-color: #e74c3c;
+        color: white;
+        padding: 5px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-cancel:hover {
+        background-color: #c0392b;
+    }
+
+    a {
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+    }
+
+    a:hover {
+        color: #21618c;
+    }
+</style>
+
+<div class="container">
+    <h2>Danh sách yêu cầu đổi lịch đã gửi</h2>
+
+    {% if danh_sach %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Ngày tiêm cũ</th>
+                    <th>Ngày muốn đổi</th>
+                    <th>Lý do</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for yc in danh_sach %}
+                    <tr>
+                        <td>{{ yc.lich_cu.tg_tiem|date:"d/m/Y" }}</td>
+                        <td>{{ yc.ngay_moi|date:"d/m/Y" }}</td>
+                        <td>{{ yc.ly_do }}</td>
+                        <td>
+                            {% if yc.trang_thai == 'cho_duyet' %}
+                                <span class="status-pending">Chờ duyệt</span>
+                            {% elif yc.trang_thai == 'da_duyet' %}
+                                <span class="status-approved">Đã duyệt</span>
+                            {% else %}
+                                <span class="status-rejected">Từ chối</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if yc.trang_thai == 'cho_duyet' %}
+                                <form method="post" action="{% url 'huy_yeu_cau' yc.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel" onclick="return confirm('Bạn có chắc muốn hủy yêu cầu này không?')">Hủy</button>
+                                </form>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Chưa có yêu cầu đổi lịch nào.</p>
+    {% endif %}
+
+    <a href="{% url 'xem_lich' %}">← Quay lại lịch tiêm</a>
+</div>
+{% endblock %}

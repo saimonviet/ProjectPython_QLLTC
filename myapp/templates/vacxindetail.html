@@ -1,0 +1,229 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin Vacxin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-message {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            text-align: center;
+            margin: 30px auto 20px;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            color: #3498db;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            gap: 30px;
+        }
+
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #3498db;
+            object-fit: cover;
+        }
+
+        .details-container {
+            flex: 2;
+        }
+
+        .details-container h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .view-button, .logout-link {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .view-button {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .view-button:hover {
+            background-color: #2980b9;
+        }
+
+        .logout-link {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .logout-link:hover {
+            background-color: #27ae60;
+        }
+
+        .not-found {
+            text-align: center;
+            color: red;
+            margin-top: 50px;
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Trung tâm y tế dự phòng</h1>
+</header>
+
+<div class="welcome-message">
+    Chào mừng bạn đến với Website Quản Lý Lịch Tiêm Chủng
+</div>
+
+{% if vacxin %}
+    <div class="container">
+        <div class="image-container">
+            <img src="{% static vacxin.HinhAnh %}" alt="Hình ảnh VacXin">
+        </div>
+
+        <div class="details-container">
+            <h1>Chi tiết Vaccine</h1>
+            <table>
+                <tr>
+                    <th>Mã Vaccine</th>
+                    <td>{{ vacxin.MaVacXin }}</td>
+                </tr>
+                <tr>
+                    <th>Tên Vaccine</th>
+                    <td>{{ vacxin.TenVacXin }}</td>
+                </tr>
+                <tr>
+                    <th>Số Mũi</th>
+                    <td>{{ vacxin.SoMui }}</td>
+                </tr>
+                <tr>
+                    <th>Mô Tả</th>
+                    <td>{{ vacxin.Mota }}</td>
+                </tr>
+                <tr>
+                    <th>Giá Vaccine</th>
+                    <td>{{ vacxin.GiaVacXin }}</td>
+                </tr>
+                <tr>
+                    <th>Hãng Sản Xuất</th>
+                    <td>{{ vacxin.TenHangSX }}</td>
+                </tr>
+            </table>
+
+            <div class="button-container">
+                <a class="view-button" href="{% url 'dat_lich' MaVacXin=vacxin.MaVacXin %}">Đăng ký tiêm</a>
+                <a class="logout-link" href="/">Quay lại</a>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="not-found">
+        Không tìm thấy thông tin VacXin.<br><br>
+        <a class="logout-link" href="/">Quay lại</a>
+    </div>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trang Chủ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+
+        header {
+            background-color: rgba(52, 152, 219, 1);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-radius: 0 0 12px 12px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .auth-links a {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: #2980b9;
+            padding: 12px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 10px rgba(41, 128, 185, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .auth-links a:hover {
+            background-color: white;
+            color: #2980b9;
+            border-color: #2980b9;
+            box-shadow: 0 6px 15px rgba(41, 128, 185, 0.8);
+        }
+
+        .welcome-message {
+            max-width: 900px;
+            margin: 40px auto 30px;
+            background-color: #ffffffdd;
+            padding: 30px 40px;
+            border-radius: 15px;
+            text-align: center;
+            color: #2980b9;
+            font-size: 2rem;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(41, 128, 185, 0.25);
+            user-select: none;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto 50px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-container input[type="text"] {
+            flex-grow: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #2980b9;
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: #1c5980;
+            box-shadow: 0 0 10px #1c5980;
+        }
+
+        .search-container .search-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(41, 128, 185, 0.6);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+        }
+
+        .search-container .search-button:hover {
+            background-color: #1c5980;
+            box-shadow: 0 6px 15px rgba(28, 89, 128, 0.9);
+        }
+
+        .center-title {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #1c5980;
+            letter-spacing: 1.5px;
+            user-select: none;
+        }
+
+        .image-gallery {
+            max-width: 1200px;
+            margin: 0 auto 70px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .vacxin-item {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        .vacxin-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            border-bottom: 3px solid #2980b9;
+        }
+
+        .vacxin-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .vacxin-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .vacxin-item p {
+            margin: 15px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .view-button {
+            display: inline-block;
+            font-size: 1.1rem;
+            color: #2980b9;
+            font-weight: 700;
+            padding: 10px 25px;
+            background-color: #ecf0f1;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+        }
+
+        .view-button:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 15px;
+            background-color: #f1f1f1cc;
+            color: #555;
+            font-size: 0.95rem;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+            user-select: none;
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            .welcome-message {
+                font-size: 1.5rem;
+                padding: 25px 20px;
+            }
+
+            .center-title {
+                font-size: 1.8rem;
+            }
+
+            .vacxin-item img {
+                height: 180px;
+            }
+
+            .auth-links {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .auth-links a {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Trung tâm y tế dự phòng</h1>
+        <div class="auth-links">
+            <a href="{% url 'register' %}">Đăng ký</a>
+            <a href="{% url 'login' %}">Đăng nhập</a>
+        </div>
+    </header>
+
+    <div class="welcome-message">
+        <h2>Chào mừng bạn đến với Website Quản Lý Lịch Tiêm Chủng</h2>
+    </div>
+
+    <div class="search-container">
+        <form method="get" action="{% url 'index' %}">
+            <input type="text" name="search" placeholder="Tìm kiếm vaccine..." value="{{ request.GET.search }}">
+            <button type="submit" class="search-button">Tìm kiếm</button>
+        </form>
+    </div>
+
+    <h1 class="center-title">Danh sách Vaccine</h1>
+
+    <div class="image-gallery">
+        {% for vacxin in vacxins %}
+        <div class="vacxin-item">
+            <img src="{% static vacxin.HinhAnh %}" alt="{{ vacxin.TenVacXin }}" loading="lazy" />
+            <p>
+                <a href="{% url 'chi_tiet_vacxin' vacxin.MaVacXin %}" class="view-button">
+                    {{ vacxin.TenVacXin }}
+                </a>
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <footer>
+        &copy; 2024 Trang Web Vaccine. All Rights Reserved.
+    </footer>
+</body>
+
+</html>

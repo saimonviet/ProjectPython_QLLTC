@@ -1,0 +1,167 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt lịch tiêm chủng</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/background.png" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 0;
+        }
+
+        form {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px 35px;
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #21618c;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #21618c;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"]:read-only,
+        input[type="number"]:read-only {
+            background-color: #eaf2f8;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            width: 48%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        input[type="submit"]:hover,
+        input[type="reset"]:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        input[type="submit"]:active,
+        input[type="reset"]:active {
+            transform: translateY(1px);
+        }
+
+        a.logout-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a.logout-link:hover {
+            color: #1e5a8c;
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'dat_lich' MaVacXin=vacxin.MaVacXin %}" method="post">
+        {% csrf_token %}
+        <h2>Đặt lịch tiêm chủng</h2>
+        {% if message %}
+            <p style="color: red;">{{ message }}</p>
+        {% endif %}
+        <div class="container">
+            <label>Mã Vắc Xin</label>
+            <input type="text" name="mavx" value="{{ vacxin.MaVacXin }}" readonly />
+
+            <label>Tên Vắc Xin</label>
+            <input type="text" value="{{ vacxin.TenVacXin }}" readonly />
+
+            <label>Số Mũi</label>
+            <input type="number" name="somui" value="{{ vacxin.SoMui }}" readonly />
+
+            <label>Mô tả</label>
+            <input type="text" value="{{ vacxin.Mota }}" readonly />
+
+            <label>Giá Vắc Xin</label>
+            <input type="number" value="{{ vacxin.GiaVacXin }}" readonly />
+
+            <label>Ngày Tiêm</label>
+            <input type="date" name="ngaytiem" required />
+
+            <div class="btn-group">
+                <input type="submit" value="Đặt lịch" onclick="return confirm('Bạn muốn đặt lịch tiêm vacxin này?');">
+                <input type="reset" value="Làm Lại">
+            </div>
+
+            <a class="logout-link" href="{% url 'view_vacxin' %}">Quay lại</a>
+        </div>
+    </form>
+</body>
+</html>
+{% endblock %}

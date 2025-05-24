@@ -1,0 +1,118 @@
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 80px auto;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 700;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+        color: #2c3e50;
+    }
+
+    input[type="date"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    input[type="date"]:focus,
+    textarea:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 6px rgba(52, 152, 219, 0.5);
+    }
+
+    button[type="submit"] {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #2980b9;
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #21618c;
+    }
+</style>
+
+<div class="container">
+    <h2>Gửi yêu cầu đổi lịch tiêm</h2>
+    <p><strong>Khách hàng:</strong> {{ lich.ma_kh.ho_ten }}</p>
+    <p><strong>Lịch cũ:</strong> {{ lich.tg_tiem|date:"d/m/Y" }} | <strong>Vaccine:</strong> {{ lich.ten_vx }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Ngày muốn đổi sang:</label>
+            <input type="date" name="ngay_moi" required>
+        </div>
+        <div>
+            <label>Lý do:</label>
+            <textarea name="ly_do" rows="3" required></textarea>
+        </div>
+        <button type="submit">Gửi yêu cầu</button>
+        <br>
+        <a href="{% url 'xem_lich' %}">← Quay lại</a>
+    </form>
+</div>
+{% endblock %}

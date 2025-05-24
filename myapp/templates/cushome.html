@@ -1,0 +1,411 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang Chủ</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 50px;
+            background-color: rgba(30, 144, 255, 0.9);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .welcome {
+            font-size: 18px;
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        .action-link {
+            font-size: 16px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background-color: #2980b9;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: background-color 0.3s ease, transform 0.15s ease;
+            cursor: pointer;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-link:hover {
+            background-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .notification-box {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 320px;
+            max-height: 420px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1500;
+            font-size: 14px;
+            color: #444;
+            user-select: text;
+        }
+
+        .notification-box.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .notification-header {
+            padding: 16px 20px;
+            font-weight: 700;
+            background-color: #1e90ff;
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            font-size: 18px;
+        }
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-list li {
+            padding: 14px 20px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-list li:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* Main container */
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 50px;
+            margin: 60px auto 80px auto;
+            padding: 25px;
+            flex-wrap: wrap;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .left-side, .right-side {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px 35px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .left-side:hover, .right-side:hover {
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+        }
+
+        .left-side {
+            flex: 1.3;
+            border-left: 6px solid #3498db;
+            max-width: 550px;
+        }
+
+        .right-side {
+            flex: 0.85;
+            border: 1.5px solid #ddd;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        form h2 {
+            color: #21618c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 26px;
+            letter-spacing: 1.2px;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: 600;
+            color: #21618c;
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 14px 15px;
+            margin-top: 8px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            border-color: #1e90ff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(30, 144, 255, 0.6);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 28px;
+            margin-bottom: 20px;
+            margin-top: 12px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #21618c;
+            font-size: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Right side menu */
+        .right-side .header {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1e90ff;
+            margin-bottom: 35px;
+            letter-spacing: 1.5px;
+        }
+
+        .right-side .link {
+            display: block;
+            padding: 18px 15px;
+            margin: 15px 0;
+            background-color: #1e90ff;
+            color: white;
+            font-size: 19px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 18px rgba(30, 144, 255, 0.5);
+            user-select: none;
+        }
+
+        .right-side .link:hover {
+            background-color: #2980b9;
+            transform: scale(1.06);
+            box-shadow: 0 10px 28px rgba(41, 128, 185, 0.7);
+        }
+
+        a.logout-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            user-select: none;
+        }
+
+        a.logout-link:hover {
+            color: #1e90ff;
+        }
+
+        @media (max-width: 900px) {
+            .main {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-side, .right-side {
+                max-width: 90vw;
+                width: 100%;
+            }
+            .header-title {
+                font-size: 24px;
+                padding: 0 10px;
+            }
+            header {
+                padding: 15px 20px;
+            }
+            .right-side .link {
+                font-size: 17px;
+                padding: 15px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome {
+                font-size: 14px;
+            }
+            .header-actions {
+                gap: 12px;
+            }
+            .action-link {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .right-side .header {
+                font-size: 24px;
+            }
+        }
+    </style>
+
+    <script>
+        function confirmLogout() {
+            return confirm('Bạn có chắc chắn muốn đăng xuất?');
+        }
+
+        function toggleNotification() {
+            const box = document.getElementById('notification-box');
+            if (box.classList.contains('show')) {
+                box.classList.remove('show');
+                setTimeout(() => box.style.display = 'none', 300);
+            } else {
+                box.style.display = 'block';
+                setTimeout(() => box.classList.add('show'), 10);
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const box = document.getElementById('notification-box');
+            const button = event.target.closest('.action-link');
+            if (!box.contains(event.target) && (!button || !button.textContent.includes('Thông báo'))) {
+                if (box.classList.contains('show')) {
+                    box.classList.remove('show');
+                    setTimeout(() => box.style.display = 'none', 300);
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="welcome">Xin chào, {{ kh.ho_ten }}!</div>
+        <div class="header-title">TRANG WEB QUẢN LÝ LỊCH TIÊM CHỦNG</div>
+        <div class="header-actions">
+            <a href="{% url 'change_password' %}" class="action-link">🔒 Đổi mật khẩu</a>
+            <a class="action-link" onclick="toggleNotification()">🔔 Thông báo</a>
+            <a href="{% url 'logout' %}" class="action-link" onclick="return confirmLogout();">🚪 Đăng xuất</a>
+
+            <div id="notification-box" class="notification-box" aria-live="polite" aria-atomic="true" role="region">
+                <div class="notification-header">Thông báo</div>
+                <ul class="notification-list">
+                    {% for lich in lich_tiem %}
+                        <li>Bạn có lịch tiêm {{ lich.ten_vx }} (mũi {{ lich.stt_mui }}) vào ngày {{ lich.tg_tiem|date:'d/m/Y' }}.</li>
+                    {% empty %}
+                        <li>Hiện tại không có lịch tiêm nào sắp tới.</li>
+                    {% endfor %}
+                </ul>                
+            </div>
+        </div>
+    </header>
+
+    <div class="main">
+        <!-- Bên trái: Form thông tin khách hàng -->
+        <div class="left-side" role="region" aria-labelledby="info-title">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <h2 id="info-title">Thông Tin Khách Hàng</h2>
+
+                <label for="makh">Mã Khách Hàng</label>
+                <input id="makh" type="text" name="makh" value="{{ kh.ma_kh }}" readonly />
+
+                <label for="hotenkh">Họ Và Tên</label>
+                <input id="hotenkh" type="text" name="hotenkh" value="{{ kh.ho_ten }}" readonly />
+
+                <label for="sodienthoai">Số Điện Thoại</label>
+                <input id="sodienthoai" type="text" name="sodienthoai" value="{{ kh.so_dien_thoai }}" readonly />
+
+                <label for="diachi">Địa Chỉ</label>
+                <input id="diachi" type="text" name="diachi" value="{{ kh.dia_chi }}" readonly />
+
+                <label for="ngaysinh">Ngày Sinh</label>
+                <input id="ngaysinh" type="date" name="ngaysinh" value="{{ kh.ngay_sinh|date:'Y-m-d' }}" readonly />
+
+                <label>Giới Tính</label>
+                <div class="radio-group" role="radiogroup" aria-labelledby="gioitinh-label">
+                    <label for="gt-nam">
+                        <input id="gt-nam" type="radio" name="gioitinh" value="Nam" {% if kh.gioi_tinh == 'Nam' %}checked{% endif %} disabled /> Nam
+                    </label>
+                    <label for="gt-nu">
+                        <input id="gt-nu" type="radio" name="gioitinh" value="Nữ" {% if kh.gioi_tinh == 'Nữ' %}checked{% endif %} disabled /> Nữ
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bên phải: Menu chọn yêu cầu -->
+        <div class="right-side" role="navigation" aria-label="Menu lựa chọn">
+            <div class="header">Xin chọn yêu cầu</div>
+            <a class="link" href="{% url 'customer_detail' ma_kh=request.session.MaKH %}">1. Sửa thông tin cá nhân</a>
+            <a class="link" href="{% url 'view_vacxin' %}">2. Xem thông tin vaccine</a>
+            <a class="link" href="{% url 'xem_lich' %}">3. Xem lịch sử tiêm phòng</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch Tiêm Chi Tiết</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: brightness(0.85);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            margin-bottom: 30px;
+            animation: slideUp 1s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .request-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            font-size: 15px;
+            background: linear-gradient(to right, #ff9800, #ffc107);
+            color: #fff;
+            font-weight: bold;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .request-link:hover {
+            background: linear-gradient(to right, #fb8c00, #ffa000);
+            transform: translateY(-1px);
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input[type="date"],
+        .search-form input[type="submit"] {
+            padding: 12px 18px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-form input[type="date"]:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px #3498db;
+        }
+
+        .search-form input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .search-form input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        #calendar {
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: linear-gradient(to right, #4caf50, #66bb6a);
+            color: #fff;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: background 0.4s, transform 0.3s;
+        }
+
+        .back-link:hover {
+            background: linear-gradient(to right, #43a047, #4caf50);
+            transform: translateY(-2px);
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lịch Sử Tiêm Chủng Cá Nhân</h1>
+
+    <div class="container">
+
+        <!-- Nút xem yêu cầu -->
+        <a href="{% url 'xem_yeu_cau' %}" class="request-link">Xem yêu cầu đã gửi</a>
+
+        <form class="search-form" action="{% url 'tim_kiem_lich' %}" method="post">
+            {% csrf_token %}
+            <input type="date" name="TGTiem" required>
+            <input type="submit" value="Tìm kiếm">
+        </form>
+
+        {% if listLich %}
+        <div id="calendar"></div>
+        {% else %}
+            <p>Không có dữ liệu lịch tiêm!</p>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'customer_home' %}" class="back-link">Quay lại</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 600,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                events: [
+                    {% for lich in listLich %}
+                    {
+                        id: '{{ lich.id }}',
+                        title: '{{ lich.ma_kh.ma_kh }} - {{ lich.stt_mui }} - {{ lich.ma_vx }}',
+                        start: '{{ lich.tg_tiem|date:"Y-m-d" }}',
+                        color: '{% if lich.trangthai %}#2ecc71{% else %}#3498db{% endif %}',
+                        description: '{% if lich.trangthai %}Đã tiêm{% else %}Chưa tiêm{% endif %} <br> Mã vaccine: {{ lich.ma_vx }} - {{ lich.ten_vx }} <br> Mũi: {{ lich.stt_mui }} <br> Ngày tiêm: {{ lich.tg_tiem|date:"d/m/Y" }}'
+                    },
+                    {% endfor %}
+                ],
+                eventDidMount: function(info) {
+                    tippy(info.el, {
+                        content: info.event.extendedProps.description,
+                        placement: 'top',
+                        animation: 'scale',
+                        theme: 'light-border',
+                        allowHTML: true 
+                    });
+                },
+                eventClick: function(info) {
+                    const lichId = info.event.id;
+                    const xacNhan = confirm("Bạn có muốn gửi yêu cầu đổi lịch tiêm này không?");
+                    if (xacNhan) {
+                        window.location.href = `/gui-yeu-cau/${lichId}/`;
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+
+</body>
+</html>

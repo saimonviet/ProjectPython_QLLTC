@@ -1,0 +1,229 @@
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        padding: 40px;
+        margin: 0;
+    }
+
+    h1 {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.8rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .search-box {
+        max-width: 900px;
+        margin: 0 auto 25px auto;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .search-box input {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 220px;
+        transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 6px rgba(52, 152, 219, 0.5);
+    }
+
+    .search-box button {
+        padding: 12px 24px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .search-box button:hover {
+        background-color: #2980b9;
+        transform: scale(1.05);
+    }
+
+    .table-wrapper {
+        max-width: 1100px;
+        margin: auto;
+        overflow-x: auto;
+        max-height: 500px;
+        border-radius: 10px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        background-color: rgba(255, 255, 255, 0.95);
+        position: relative;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+
+    thead th {
+        background-color: #3498db;
+        color: white;
+        padding: 14px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    tbody td {
+        text-align: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+        background-color: #f3f8ff;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .vaccine-button,
+    .delete-button {
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        border: none;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .vaccine-button {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .vaccine-button:hover {
+        background-color: #219150;
+        transform: translateY(-2px);
+    }
+
+    .delete-button {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .delete-button:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin: 40px auto 0;
+        width: fit-content;
+        padding: 12px 26px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3498db;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: 2px solid #3498db;
+    }
+
+    .back-link:hover {
+        background-color: #2980b9;
+        transform: scale(1.05);
+    }
+
+    .no-results {
+        text-align: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-top: 30px;
+    }
+
+    .action-buttons a,
+    .action-buttons form {
+        display: inline-block;
+    }
+
+    .action-buttons form {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<h1>Lịch Tiêm Vaccine</h1>
+
+<div class="search-box">
+    <form method="get" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+        <input type="text" name="ma_kh" placeholder="Tìm kiếm theo mã KH" value="{{ request.GET.ma_kh }}">
+        <input type="text" name="ma_vx" placeholder="Tìm kiếm theo mã vaccine" value="{{ request.GET.ma_vx }}">
+        <button type="submit">🔍 Tìm kiếm</button>
+    </form>
+</div>
+
+{% if listLich %}
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Mã KH</th>
+                <th>Họ tên</th>
+                <th>Mã Vaccine</th>
+                <th>Tên Vaccine</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lich in listLich %}
+            <tr>
+                <td>{{ lich.ma_kh.ma_kh }}</td>
+                <td>{{ lich.ma_kh.ho_ten }}</td>
+                <td>{{ lich.ma_vx }}</td>
+                <td>{{ lich.ten_vx }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <div class="action-buttons">
+                            <!-- Nút Xem -->
+                            <a class="vaccine-button" href="{% url 'lich_su_tiem' ma_kh=lich.ma_kh.ma_kh ma_vx=lich.ma_vx %}">Xem</a>
+                    
+                            <!-- Nút Xóa -->
+                            <a class="delete-button" href="{% url 'xoa_lich' ma_kh=lich.ma_kh.ma_kh ma_vx=lich.ma_vx %}" onclick="return confirm('Bạn có chắc chắn muốn xoá lịch này?');">Xoá</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div class="no-results">Không có lịch tiêm nào phù hợp.</div>
+{% endif %}
+
+<a class="back-link" href="{% url 'admin_home' %}">← Quay Lại</a>
+{% endblock %}

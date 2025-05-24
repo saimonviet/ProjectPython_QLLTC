@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Quản lý lịch tiêm chủng</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            backdrop-filter: brightness(0.9);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            width: 100%;
+            background-color: rgba(30, 144, 255, 0.9);
+            color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            flex: 1;
+        }
+
+        .welcome {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-link {
+            background: #2980b9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+            transition: background 0.3s, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .action-link:hover {
+            background: #e74c3c;
+        }
+
+        .action-link:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2) inset;
+        }
+
+        main {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .calendar-container {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 600px;
+        }
+
+        #calendar {
+            margin-top: 20px;
+        }
+
+        .options-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .options-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e90ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .link {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: linear-gradient(45deg, #1e90ff, #00bfff);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .link:hover {
+            background: linear-gradient(45deg, #007acc, #00bfff);
+            transform: scale(1.05);
+        }
+
+        .link:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2) inset;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .calendar-container, .options-container {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- Thêm thư viện Tippy.js thay cho Tooltip.js -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css"/>
+</head>
+<body>
+
+<header>
+    <div class="welcome">Xin chào, {{ username }}!</div>
+    <div class="header-title">TRANG QUẢN LÝ LỊCH TIÊM CHỦNG</div>
+    <div class="header-actions">
+        <a href="{% url 'logout' %}" class="action-link" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất?');">🚪 Đăng xuất</a>
+    </div>
+</header>
+
+<main>
+    <div class="calendar-container">
+        <div id="calendar"></div>
+    </div>
+
+    <div class="options-container">
+        <div class="options-title">Xin chọn yêu cầu</div>
+        <a href="{% url 'them_vacxin' %}" class="link">1. Tạo mới loại Vaccine</a>
+        <a href="{% url 'view_vacxin' %}" class="link">2. Xem danh sách Vaccin</a>
+        <a href="{% url 'view_khachhang' %}" class="link">3. Xem danh sách khách hàng</a>
+        <a href="{% url 'xem_lich_admin' %}" class="link">4. Chỉnh sửa lịch tiêm chủng</a>
+        <a href="{% url 'danh_sach_yeu_cau' %}" class="link">5. Duyệt yêu cầu đổi lịch tiêm</a> 
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 600,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            events: [
+                {% for lich in listLich %}
+                {
+                    title: '{{ lich.ma_kh.ma_kh }} - {{ lich.stt_mui }} - {{ lich.ma_vx }}',
+                    start: '{{ lich.tg_tiem|date:"Y-m-d" }}',
+                    color: '{% if lich.trangthai %}#2ecc71{% else %}#3498db{% endif %}',
+                    description: 'Khách hàng: {{ lich.ma_kh.ma_kh }} - {{ lich.ma_kh.ho_ten }} <br> Vaccin: {{ lich.ma_vx }} - {{ lich.ten_vx }} <br> Mũi: {{ lich.stt_mui }} <br> Ngày tiêm: {{ lich.tg_tiem|date:"d/m/Y" }}'
+                },
+                {% endfor %}
+            ],
+            eventDidMount: function(info) {
+                tippy(info.el, {
+                    content: info.event.extendedProps.description,
+                    placement: 'top',
+                    animation: 'scale',
+                    theme: 'light-border',
+                    allowHTML: true 
+                });
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+
+</body>
+</html>

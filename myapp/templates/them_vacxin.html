@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Vaccine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        input.form-control {
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input.form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e86de;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center text-primary">Thêm Vaccine Mới</h2>
+        <hr>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Mã Vaccine</label>
+                <input type="text" name="MaVacXin" class="form-control" value="{{ ma_tiep_theo }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tên Vaccine</label>
+                <input type="text" name="TenVacXin" class="form-control" placeholder="Nhập tên Vaccine" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Số mũi</label>
+                <input type="number" name="SoMui" class="form-control" placeholder="Nhập số mũi" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <input type="text" name="Mota" class="form-control" placeholder="Nhập mô tả" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giá Vaccine</label>
+                <input type="number" step="0.01" name="GiaVacXin" class="form-control" placeholder="Nhập giá Vaccine" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tên Hãng Sản Xuất</label>
+                <input type="text" name="TenHangSX" class="form-control" placeholder="Nhập tên hãng sản xuất" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Hình Ảnh</label>
+                <input type="file" name="HinhAnh" class="form-control" id="HinhAnhInput" accept="image/*" required>
+            </div>
+            <div class="mb-3 text-center">
+                <img id="previewImage" src="#" alt="Xem trước hình ảnh" style="max-height: 250px; display: none;" class="img-fluid rounded shadow">
+            </div>
+
+            <script>
+                document.getElementById("HinhAnhInput").addEventListener("change", function (event) {
+                    const file = event.target.files[0];
+                    const preview = document.getElementById("previewImage");
+
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.src = e.target.result;
+                            preview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = "#";
+                        preview.style.display = "none";
+                    }
+                });
+            </script>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <a href="{% url 'admin_home' %}" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

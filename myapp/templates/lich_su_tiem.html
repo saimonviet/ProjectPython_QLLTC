@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Tiêm Chi Tiết</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        td {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #eaf5ff;
+            transform: scale(1.02);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+        }
+
+        .actions button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .actions button:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+        }
+
+        input[type="date"], select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #3498db;
+            padding: 12px 24px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .actions button {
+                font-size: 0.85rem;
+                padding: 8px 14px;
+            }
+
+            .back-link {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Lịch Tiêm Chi Tiết - Mã Khách Hàng: {{ ma_kh }}</h1>
+    <div class="container">
+        {% if list_lich %}
+        <form method="post" action="{% url 'cap_nhat_lich' %}">
+            {% csrf_token %}
+            <input type="hidden" name="ma_kh" value="{{ ma_kh }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã Vaccine</th>
+                        <th>Số Thứ Tự Mũi</th>
+                        <th>Ngày Tiêm</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lich in list_lich %}
+                    <tr>
+                        <td>{{ lich.ma_vx }}</td>
+                        <td>{{ lich.stt_mui }}</td>
+                        <td>
+                            <input type="date" name="tg_tiem_{{ lich.id }}" value="{{ lich.tg_tiem|date:'Y-m-d' }}" {% if lich.trangthai %}readonly{% endif %}>
+                        </td>
+                        <td>
+                            <select name="trangthai_{{ lich.id }}">
+                                <option value="True" {% if lich.trangthai %}selected{% endif %}>Đã tiêm</option>
+                                <option value="False" {% if not lich.trangthai %}selected{% endif %}>Chưa tiêm</option>
+                            </select>
+                        </td>
+                        <td class="actions">
+                            <button type="submit" name="save_id" value="{{ lich.id }}">Cập nhật</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>        
+        {% else %}
+            <div class="no-results">Không có dữ liệu lịch tiêm chi tiết!</div>
+        {% endif %}
+    </div>
+    <a href="{% url 'xem_lich_admin' %}" class="back-link">Quay Lại Danh Sách Lịch</a>
+</body>
+</html>

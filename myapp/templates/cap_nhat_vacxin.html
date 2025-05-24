@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cập nhật Vaccine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* (giữ nguyên style cũ của bạn) */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("{% static 'images/background.png' %}") no-repeat center center fixed;
+      background-color: #eaf2f8;
+      background-repeat: repeat;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #ffffffcc;
+      padding: 40px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+    h1 { text-align: center; color: #2c3e50; margin-bottom: 40px; font-size: 32px; }
+    form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    label { font-weight: 500; color: #34495e; margin-bottom: 6px; }
+    input[type="text"], input[type="number"], input[type="file"] {
+      width: 100%; padding: 12px; font-size: 16px;
+      border: 1px solid #ccc; border-radius: 6px; transition: all 0.3s ease;
+    }
+    input:focus {
+      border-color: #3498db; box-shadow: 0 0 5px rgba(52, 152, 219, 0.3); outline: none;
+    }
+    .button-group {
+      display: flex; gap: 10px;
+    }
+    button, .back-button {
+      flex: 1; padding: 12px; font-size: 16px; font-weight: bold;
+      border-radius: 6px; border: none; cursor: pointer; transition: 0.3s ease;
+      text-align: center; text-decoration: none;
+    }
+    button {
+      background-color: #3498db; color: #fff;
+    }
+    button:hover {
+      background-color: #2980b9; transform: translateY(-2px);
+    }
+    .back-button {
+      background-color: #95a5a6; color: white;
+    }
+    .back-button:hover {
+      background-color: #7f8c8d; transform: translateY(-2px);
+    }
+    .image-preview {
+      text-align: center; margin-top: 10px;
+    }
+    .image-preview img {
+      max-width: 100%; max-height: 250px;
+      border-radius: 8px; border: 1px solid #ccc;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .image-preview small {
+      display: block; color: #555; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cập nhật Vaccine</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="mavacxin" value="{{ vacxin.MaVacXin }}" />
+
+      <div>
+        <label for="tenvacxin">Tên Vaccine:</label>
+        <input type="text" id="tenvacxin" name="tenvacxin" value="{{ vacxin.TenVacXin }}" required />
+      </div>
+
+      <div>
+        <label for="somui">Số Mũi:</label>
+        <input type="number" id="somui" name="somui" value="{{ vacxin.SoMui }}" required />
+      </div>
+
+      <div>
+        <label for="mota">Mô Tả:</label>
+        <input type="text" id="mota" name="mota" value="{{ vacxin.Mota }}" required />
+      </div>
+
+      <div>
+        <label for="giavacxin">Giá Vaccine:</label>
+        <input type="number" id="giavacxin" name="giavacxin" value="{{ vacxin.GiaVacXin }}" required />
+      </div>
+
+      <div>
+        <label for="tenhangvacxin">Tên Hãng Sản Xuất:</label>
+        <input type="text" id="tenhangvacxin" name="tenhangvacxin" value="{{ vacxin.TenHangSX }}" required />
+      </div>
+
+      <div>
+        <label for="hinhanh">Chọn ảnh mới (nếu có):</label>
+        <input type="file" id="hinhanh" name="hinhanh" accept="image/*" onchange="previewImage(event)" />
+        <div class="image-preview" id="preview-container">
+          {% if vacxin.HinhAnh %}
+            <img id="preview-image" src="{% static vacxin.HinhAnh %}" alt="Ảnh hiện tại">
+            <small>Ảnh hiện tại</small>
+          {% else %}
+            <img id="preview-image" style="display:none;" />
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit">Cập nhật</button>
+        <a href="{% url 'view_vacxin' %}" class="back-button">Quay lại</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const input = event.target;
+      const preview = document.getElementById('preview-image');
+      const container = document.getElementById('preview-container');
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
+</body>
+</html>
